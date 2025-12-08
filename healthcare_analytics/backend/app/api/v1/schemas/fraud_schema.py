@@ -1,5 +1,5 @@
 # backend/app/api/v1/schemas/fraud_schema.py
-from pydantic import BaseModel, conint, confloat
+from pydantic import BaseModel, conint, confloat, Field
 from typing import Literal
 
 class FraudClaimInput(BaseModel):
@@ -20,4 +20,4 @@ class FraudClaimInput(BaseModel):
 class FraudPredictionOutput(BaseModel):
     fraud_probability: float
     is_fraud: bool
-    model_version: str = "fraud_rf_v1"
+    model_version: str = Field(default="fraud_rf_v1", const=True)
