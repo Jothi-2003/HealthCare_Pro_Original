@@ -1,23 +1,16 @@
-# backend/app/api/v1/schemas/fraud_schema.py
-from pydantic import BaseModel, conint, confloat, Field
-from typing import Literal
+from pydantic import BaseModel, Field
 
 class FraudClaimInput(BaseModel):
-    # Numeric
-    claim_amount: confloat(ge=0)
-    patient_age: conint(ge=0, le=120)
-    days_in_hospital: conint(ge=0)
-    num_procedures: conint(ge=0)
-    prior_claims: conint(ge=0)
-    billing_code_count: conint(ge=0)
+    claim_amount: float = Field(..., ge=0)
+    patient_age: int = Field(..., ge=0, le=120)
+    days_since_last_claim: int = Field(..., ge=0)
+    num_diagnoses: int = Field(..., ge=0)
 
-    # Categorical (strings or booleans mapped to strings)
     provider_id: str
     procedure_code: str
-    diagnosis_code: str
-    is_in_network: Literal["yes", "no"]  # keep consistent with training
+    state: str
+    is_emergency: str  # e.g., "yes"/"no" or "true"/"false"
 
 class FraudPredictionOutput(BaseModel):
     fraud_probability: float
     is_fraud: bool
-    model_version: str = Field(default="fraud_rf_v1", const=True)
