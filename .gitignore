@@ -1,0 +1,21 @@
+# Virtual environments
+venv/
+.env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Model files
+*.pkl
+
+# Logs
+*.log
+
+# Streamlit temporary files
+.streamlit/
+
+# OS files
+.DS_Store
+Thumbs.db
