@@ -1,60 +1,103 @@
 import streamlit as st
-from utils.api_client import predict_fraud, get_metrics
-from utils.charts import probability_gauge
+import requests
 
-st.set_page_config(page_title="Health Insurance Fraud Detection", page_icon="🛡️", layout="centered")
-# Header
-col1, col2 = st.columns([1,4])
-with col1:
-    st.image("frontend/assets/images/fraud_icon.png", width=120)
-with col2:
-    st.title("Health Insurance Fraud Detection")
-    st.write("Enter claim details to predict fraud probability.")
+API_URL = "http://127.0.0.1:8000/api/v1/fraud/predict"
+METRICS_URL = "http://127.0.0.1:8000/api/v1/fraud/metrics"
 
-# Metrics
-with st.expander("Model metrics"):
-    try:
-        m = get_metrics()
-        st.metric("Accuracy", f"{m['accuracy']:.2f}")
-        st.metric("AUC", f"{m['auc']:.2f}" if m['auc'] is not None else "NA")
-    except Exception as e:
-        st.info("Metrics unavailable. Train the model first.")
+st.set_page_config(page_title="Healthcare Fraud Detection", layout="wide")
 
-# Form
-with st.form("fraud_form", clear_on_submit=False):
-    st.subheader("Claim details")
-    claim_id = st.text_input("Claim ID", value="CLM-0001")
-    patient_age = st.number_input("Patient age", min_value=0, max_value=120, value=45)
-    provider_id = st.text_input("Provider ID", value="PRV-123")
-    claim_amount = st.number_input("Claim amount", min_value=0.0, value=15000.0, step=500.0)
-    num_diagnoses = st.number_input("Number of diagnoses", min_value=0, value=2)
-    num_procedures = st.number_input("Number of procedures", min_value=0, value=1)
-    days_hospitalized = st.number_input("Days hospitalized", min_value=0, value=3)
-    is_emergency = st.checkbox("Emergency case", value=False)
-    out_of_network = st.checkbox("Out-of-network", value=False)
-    previous_claims_count = st.number_input("Previous claims count", min_value=0, value=4)
-    denied_claims_count = st.number_input("Denied claims count", min_value=0, value=1)
+st.title("🏥 Healthcare Claim Fraud Detection")
 
-    submitted = st.form_submit_button("Predict fraud")
+with st.form("fraud_form"):
+    st.subheader("Enter Claim Details")
+
+    Claim_ID = st.text_input("Claim ID")
+    Patient_ID = st.text_input("Patient ID")
+    Policy_Number = st.text_input("Policy Number")
+    Claim_Date = st.date_input("Claim Date")
+    Service_Date = st.date_input("Service Date")
+    Policy_Expiration_Date = st.date_input("Policy Expiration Date")
+    Claim_Amount = st.number_input("Claim Amount", min_value=0.0)
+    Patient_Age = st.number_input("Patient Age", min_value=0, max_value=120)
+    Patient_Gender = st.selectbox("Patient Gender", ["M", "F"])
+    Patient_City = st.text_input("Patient City")
+    Patient_State = st.text_input("Patient State")
+    Hospital_ID = st.text_input("Hospital ID")
+    Provider_Type = st.text_input("Provider Type")
+    Provider_Specialty = st.text_input("Provider Specialty")
+    Provider_City = st.text_input("Provider City")
+    Provider_State = st.text_input("Provider State")
+    Diagnosis_Code = st.text_input("Diagnosis Code")
+    Procedure_Code = st.text_input("Procedure Code")
+    Number_of_Procedures = st.number_input("Number of Procedures", min_value=0)
+    Admission_Type = st.text_input("Admission Type")
+    Discharge_Type = st.text_input("Discharge Type")
+    Length_of_Stay_Days = st.number_input("Length of Stay (Days)", min_value=0)
+    Service_Type = st.text_input("Service Type")
+    Deductible_Amount = st.number_input("Deductible Amount", min_value=0.0)
+    CoPay_Amount = st.number_input("CoPay Amount", min_value=0.0)
+    Number_of_Previous_Claims_Patient = st.number_input("Previous Claims (Patient)", min_value=0)
+    Number_of_Previous_Claims_Provider = st.number_input("Previous Claims (Provider)", min_value=0)
+    Provider_Patient_Distance_Miles = st.number_input("Provider-Patient Distance (Miles)", min_value=0.0)
+    Claim_Submitted_Late = st.checkbox("Claim Submitted Late")
+
+    submitted = st.form_submit_button("🔍 Predict Fraud")
 
 if submitted:
     payload = {
-        "claim_id": claim_id,
-        "patient_age": patient_age,
-        "provider_id": provider_id,
-        "claim_amount": claim_amount,
-        "num_diagnoses": num_diagnoses,
-        "num_procedures": num_procedures,
-        "days_hospitalized": days_hospitalized,
-        "is_emergency": is_emergency,
-        "out_of_network": out_of_network,
-        "previous_claims_count": previous_claims_count,
-        "denied_claims_count": denied_claims_count,
+        "Patient_ID": Patient_ID,
+        "Policy_Number": Policy_Number,
+        "Claim_ID": Claim_ID,
+        "Claim_Date": str(Claim_Date),
+        "Service_Date": str(Service_Date),
+        "Policy_Expiration_Date": str(Policy_Expiration_Date),
+        "Claim_Amount": Claim_Amount,
+        "Patient_Age": Patient_Age,
+        "Patient_Gender": Patient_Gender,
+        "Patient_City": Patient_City,
+        "Patient_State": Patient_State,
+        "Hospital_ID": Hospital_ID,
+        "Provider_Type": Provider_Type,
+        "Provider_Specialty": Provider_Specialty,
+        "Provider_City": Provider_City,
+        "Provider_State": Provider_State,
+        "Diagnosis_Code": Diagnosis_Code,
+        "Procedure_Code": Procedure_Code,
+        "Number_of_Procedures": Number_of_Procedures,
+        "Admission_Type": Admission_Type,
+        "Discharge_Type": Discharge_Type,
+        "Length_of_Stay_Days": Length_of_Stay_Days,
+        "Service_Type": Service_Type,
+        "Deductible_Amount": Deductible_Amount,
+        "CoPay_Amount": CoPay_Amount,
+        "Number_of_Previous_Claims_Patient": Number_of_Previous_Claims_Patient,
+        "Number_of_Previous_Claims_Provider": Number_of_Previous_Claims_Provider,
+        "Provider_Patient_Distance_Miles": Provider_Patient_Distance_Miles,
+        "Claim_Submitted_Late": Claim_Submitted_Late
     }
+
     try:
-        result = predict_fraud(payload)
-        probability_gauge(result["probability"])
-        st.success(f"Fraud flag: {'Likely fraud' if result['is_fraud'] else 'Low risk'}")
-        st.code(result, language="json")
+        res = requests.post(API_URL, json=payload)
+        if res.status_code == 200:
+            result = res.json()
+            st.success(f"✅ Prediction complete for Claim {result['Claim_ID']}")
+            st.metric("Fraud Probability", f"{result['probability']:.3f}")
+            st.metric("Is Fraud?", "🚨 Yes" if result["is_fraud"] else "✅ No")
+        else:
+            st.error(f"Error {res.status_code}: {res.text}")
     except Exception as e:
-        st.error(f"Prediction failed: {e}")
+        st.error(f"Request failed: {e}")
+
+st.divider()
+st.subheader("📊 Model Metrics")
+
+try:
+    metrics_res = requests.get(METRICS_URL)
+    if metrics_res.status_code == 200:
+        metrics = metrics_res.json()
+        st.metric("Accuracy", f"{metrics['accuracy']:.3f}")
+        st.metric("AUC", metrics['auc'] if metrics['auc'] is not None else "NA")
+    else:
+        st.warning("Metrics not available.")
+except Exception as e:
+    st.error(f"Failed to fetch metrics: {e}")

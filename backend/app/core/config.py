@@ -1,8 +1,11 @@
-from pydantic import BaseModel
-import os
+from pydantic import BaseSettings
 
-class Settings(BaseModel):
-    MODEL_PATH: str = os.getenv("FRAUD_MODEL_PATH", "backend/app/ml_models/fraud_model.pkl")
-    TARGET_COLUMN: str = os.getenv("FRAUD_TARGET_COLUMN", "is_fraud")
+class Settings(BaseSettings):
+    MODEL_PATH: str = "backend/app/ml_models/fraud_model.pkl"
+    TARGET_COLUMN: str = "Is_Fraudulent"
+
+    class Config:
+        env_prefix = ""
+        case_sensitive = False
 
 settings = Settings()
