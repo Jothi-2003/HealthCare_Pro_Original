@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 import pandas as pd
-from app.core.model_loader import load_fraud_model
+from backend.app.core.model_loader import load_fraud_model
 from ..schemas.fraud_schema import (
     FraudPredictRequest, FraudPredictResponse, FraudMetricsResponse
 )
