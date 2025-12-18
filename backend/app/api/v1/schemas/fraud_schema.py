@@ -22,6 +22,3 @@ class FraudPredictResponse(BaseModel):
 class FraudMetricsResponse(BaseModel):
     accuracy: float
     auc: float | None = None
-
-class FraudRequest(BaseModel):
-    denied_claims: int
