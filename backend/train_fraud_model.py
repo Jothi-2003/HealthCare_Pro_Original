@@ -13,6 +13,7 @@ from backend.app.utils.preprocess import build_preprocessor
 
 logger = configure_logging()
 
+# Identifier columns that should be dropped if present
 IDENTIFIER_COLS = [
     "Claim_ID", "Patient_ID", "Policy_Number", "Hospital_ID"
 ]
@@ -27,19 +28,27 @@ def main():
     # 2) Target column
     target = settings.TARGET_COLUMN
     if target not in df.columns:
-        raise ValueError(f"Target column '{target}' not found in dataset")
+        raise ValueError(
+            f"Target column '{target}' not found in dataset. Available columns: {df.columns.tolist()}"
+        )
 
     # 3) Split features/target
     y = df[target].astype(int)
     X = df.drop(columns=[target])
 
-    # Drop identifiers (not predictive, can leak information)
+    # Drop identifiers safely (only if they exist)
+    dropped = []
     for col in IDENTIFIER_COLS:
         if col in X.columns:
             X = X.drop(columns=[col])
+            dropped.append(col)
+    if dropped:
+        logger.info(f"Dropped identifier columns: {dropped}")
+    else:
+        logger.info("No identifier columns found to drop.")
 
     # 4) Preprocessor
-    preprocessor, num_cols, cat_cols = build_preprocessor(df, target)
+    preprocessor, num_cols, cat_cols = build_preprocessor(X, target=None)
     logger.info(f"Numeric cols: {num_cols}")
     logger.info(f"Categorical cols: {cat_cols}")
 
