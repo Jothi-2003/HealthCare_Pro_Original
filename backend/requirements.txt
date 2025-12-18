@@ -1,18 +1,8 @@
-# Web framework
-fastapi
-uvicorn[standard]
-
-# Data handling
-pandas
-numpy
-
-# Machine learning
-scikit-learn
-joblib
-xgboost   # optional, if you want to train with XGBoost
-
-# Validation
-pydantic
-
-# Logging & configuration
-python-dotenv   # for environment variables
+fastapi==0.115.2
+uvicorn==0.30.0
+pydantic==2.8.2
+scikit-learn==1.5.2
+pandas==2.2.3
+numpy==2.1.2
+joblib==1.4.2
+python-dotenv==1.0.1

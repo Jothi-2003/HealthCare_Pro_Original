@@ -1,17 +1,3 @@
-# Core UI framework
-streamlit
-
-# HTTP requests to backend
-requests
-
-# Data handling & visualization
-pandas
-numpy
-matplotlib
-seaborn
-
-# Optional: interactive charts
-plotly
-
-# Styling / extras
-python-dotenv   # if you want to load API_BASE or secrets from .env
+streamlit==1.39.0
+requests==2.32.3
+pandas==2.2.3
