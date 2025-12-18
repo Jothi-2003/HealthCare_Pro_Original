@@ -6,7 +6,7 @@ from backend.app.api.v1.schemas.fraud_schema import (
 )
 from pathlib import Path
 import joblib
-from app.core.config import settings
+from backend.app.core.config import settings
 
 
 router = APIRouter(tags=["Fraud Detection"])
