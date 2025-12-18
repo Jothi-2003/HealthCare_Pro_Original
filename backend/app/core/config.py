@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     MODEL_PATH: str = "backend/app/ml_models/fraud_model.pkl"
