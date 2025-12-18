@@ -6,9 +6,9 @@ from sklearn.metrics import accuracy_score, roc_auc_score
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 
-from backend.app.core.config import settings
-from backend.app.core.logging_config import configure_logging
-from backend.app.utils.preprocess import build_preprocessor
+from app.core.config import settings
+from app.core.logging_config import configure_logging
+from app.utils.preprocess import build_preprocessor
 
 logger = configure_logging()
 
