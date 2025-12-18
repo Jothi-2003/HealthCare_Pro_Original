@@ -6,9 +6,10 @@ from sklearn.metrics import accuracy_score, roc_auc_score
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 
-from app.core.config import settings
-from app.core.logging_config import configure_logging
-from app.utils.preprocess import build_preprocessor
+# ✅ Use backend.app imports so it works when run as a module
+from backend.app.core.config import settings
+from backend.app.core.logging_config import configure_logging
+from backend.app.utils.preprocess import build_preprocessor
 
 logger = configure_logging()
 
@@ -17,8 +18,8 @@ IDENTIFIER_COLS = [
 ]
 
 def main():
-    # 1) Load dataset
-    csv_path = Path("datasets/synthetic_health_claims.csv")
+    # 1) Load dataset from project-level datasets folder
+    csv_path = Path(__file__).resolve().parents[1] / "datasets" / "synthetic_health_claims.csv"
     if not csv_path.exists():
         raise FileNotFoundError(f"Dataset not found at: {csv_path.resolve()}")
     df = pd.read_csv(csv_path)
