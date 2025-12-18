@@ -18,6 +18,12 @@ IDENTIFIER_COLS = [
     "Claim_ID", "Patient_ID", "Policy_Number", "Hospital_ID"
 ]
 
+# Columns that must always be categorical (string codes)
+FORCE_CATEGORICAL = [
+    "Procedure_Code", "Diagnosis_Code",
+    "Claim_ID", "Patient_ID", "Policy_Number", "Hospital_ID"
+]
+
 def main():
     # 1) Load dataset from project-level datasets folder
     csv_path = Path(__file__).resolve().parents[1] / "datasets" / "synthetic_health_claims.csv"
@@ -31,6 +37,11 @@ def main():
         raise ValueError(
             f"Target column '{target}' not found in dataset. Available columns: {df.columns.tolist()}"
         )
+
+    # ✅ Force categorical typing for code columns
+    for col in FORCE_CATEGORICAL:
+        if col in df.columns:
+            df[col] = df[col].astype(str)
 
     # 3) Split features/target
     y = df[target].astype(int)
@@ -47,7 +58,7 @@ def main():
     else:
         logger.info("No identifier columns found to drop.")
 
-    # 4) Preprocessor
+    # 4) Preprocessor built on cleaned X
     preprocessor, num_cols, cat_cols = build_preprocessor(X, target=None)
     logger.info(f"Numeric cols: {num_cols}")
     logger.info(f"Categorical cols: {cat_cols}")
