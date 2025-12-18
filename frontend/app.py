@@ -3,11 +3,10 @@ from utils.api_client import predict_fraud, get_metrics
 from utils.charts import probability_gauge
 
 st.set_page_config(page_title="Health Insurance Fraud Detection", page_icon="🛡️", layout="centered")
-
 # Header
 col1, col2 = st.columns([1,4])
 with col1:
-    st.image("assets/images/logo.png", width=80)
+    st.image("assets/images/fraud_icon.png", width=120)
 with col2:
     st.title("Health Insurance Fraud Detection")
     st.write("Enter claim details to predict fraud probability.")
