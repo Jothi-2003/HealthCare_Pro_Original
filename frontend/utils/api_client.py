@@ -8,7 +8,7 @@ def predict_fraud(payload: dict):
     response.raise_for_status()
     return response.json()
 
-def get_fraud_metrics():
+def get_metrics():
     url = f"{API_BASE}/fraud/metrics"
     response = requests.get(url, timeout=10)
     response.raise_for_status()
