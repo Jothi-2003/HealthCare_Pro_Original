@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .core.logging_config import configure_logging
+from core.logging_config import configure_logging
 from .api.v1.routers.fraud_detection import router as fraud_router
 
 logger = configure_logging()
