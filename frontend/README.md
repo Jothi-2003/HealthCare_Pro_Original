@@ -31,8 +31,6 @@ frontend/
 ├── requirements.txt
 └── README.md
 
-yaml
-Copy code
 
 ---
 
