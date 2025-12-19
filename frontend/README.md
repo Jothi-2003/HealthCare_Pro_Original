@@ -2,7 +2,6 @@
 
 ## 📄 `frontend/README.md`
 
-```md
 # Healthcare Analytics – Frontend (Streamlit)
 
 This frontend provides an interactive UI for **Health Insurance Fraud Detection**, built using Streamlit.
